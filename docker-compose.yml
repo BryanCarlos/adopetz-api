@@ -1,0 +1,6 @@
+services:
+  adopetz.api.web:
+    image: ${DOCKER_REGISTRY-}adopetzapiweb
+    build:
+      context: .
+      dockerfile: src/Adopetz.Api.Web/Dockerfile
