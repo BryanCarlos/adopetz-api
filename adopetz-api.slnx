@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Adopetz.Api.Domain/Adopetz.Api.Domain.csproj" />
     <Project Path="src/Adopetz.Api.Web/Adopetz.Api.Web.csproj" />
   </Folder>
   <Project Path="docker-compose.dcproj">
