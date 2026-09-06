@@ -30,6 +30,10 @@ namespace Adopetz.Api.Infrastructure.Persistence.Configurations
                 .HasColumnName("adopted")
                 .IsRequired();
 
+            builder.Property(x => x.UserId)
+                .HasColumnName("user_id")
+                .IsRequired();
+
             builder.HasMany(x => x.Vaccines)
                 .WithOne(v => v.Pet)
                 .HasForeignKey(v => v.PetId)
