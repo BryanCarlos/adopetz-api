@@ -39,7 +39,7 @@ namespace Adopetz.Api.Infrastructure.Persistence.Repositories
 
                 query = query.Where(p => 
                 EF.Functions.ILike(
-                    EF.Functions.Unaccent(searchTerm), 
+                    EF.Functions.Unaccent(p.Name), 
                     EF.Functions.Unaccent(pattern)
                     )
                 );
