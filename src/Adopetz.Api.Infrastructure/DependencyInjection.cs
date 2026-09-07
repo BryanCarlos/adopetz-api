@@ -1,6 +1,8 @@
-﻿using Adopetz.Api.Domain.Interfaces;
+﻿using Adopetz.Api.Domain.Common.Interfaces;
+using Adopetz.Api.Domain.Interfaces;
 using Adopetz.Api.Infrastructure.Persistence;
 using Adopetz.Api.Infrastructure.Persistence.Repositories;
+using Adopetz.Api.Infrastructure.Persistence.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +22,7 @@ namespace Adopetz.Api.Infrastructure
                     opt.UseNpgsql(connectionString);
                 });
 
+                services.AddScoped<IUnitOfWork, UnitOfWork>();
                 services.AddScoped<IUserRepository, UserRepository>();
                 services.AddScoped<IPetRepository, PetRepository>();
 
