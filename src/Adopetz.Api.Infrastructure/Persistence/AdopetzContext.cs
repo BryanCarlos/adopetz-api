@@ -13,6 +13,8 @@ namespace Adopetz.Api.Infrastructure.Persistence
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AdopetzContext).Assembly);
+
+            modelBuilder.HasPostgresExtension("unaccent");
         }
     }
 }
