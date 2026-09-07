@@ -4,3 +4,26 @@ services:
     build:
       context: .
       dockerfile: src/Adopetz.Api.Web/Dockerfile
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - Database__Host=db
+      - Database__Port=5432
+      - Database__Name=${POSTGRES_DB}
+      - Database__User=${POSTGRES_USER}
+      - Database__Password=${POSTGRES_PASSWORD}
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      -  "5432:5432"
+    volumes:
+      - "postgres_data:/var/lib/postgresql/data"
+volumes:
+  postgres_data:

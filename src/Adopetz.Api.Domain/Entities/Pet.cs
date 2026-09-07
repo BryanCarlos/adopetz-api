@@ -7,7 +7,9 @@
         public string? Breed { get;private set; }
         public DateTime? RescueDate { get; private set; }
         public bool Adopted { get; private set; }
+        public Guid UserId { get; private set; }
 
+        public User User { get; private set; } = null!;
         public ICollection<Vaccine> Vaccines { get; private set; } = new List<Vaccine>();
         public ICollection<PetImage> Images { get; private set; } = new List<PetImage>();
     }
