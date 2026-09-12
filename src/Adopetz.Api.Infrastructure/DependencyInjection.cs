@@ -1,5 +1,7 @@
-﻿using Adopetz.Api.Domain.Common.Interfaces;
+﻿using Adopetz.Api.Application.Common.Interfaces;
+using Adopetz.Api.Domain.Common.Interfaces;
 using Adopetz.Api.Domain.Interfaces;
+using Adopetz.Api.Infrastructure.Authentication;
 using Adopetz.Api.Infrastructure.Persistence;
 using Adopetz.Api.Infrastructure.Persistence.Repositories;
 using Adopetz.Api.Infrastructure.Persistence.Utils;
@@ -21,6 +23,9 @@ namespace Adopetz.Api.Infrastructure
                 {
                     opt.UseNpgsql(connectionString);
                 });
+
+                services.AddSingleton<IPasswordHasher, PasswordHasher>();
+                services.AddSingleton<ITokenGenerator, JwtTokenGenerator>();
 
                 services.AddScoped<IUnitOfWork, UnitOfWork>();
                 services.AddScoped<IUserRepository, UserRepository>();

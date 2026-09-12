@@ -25,6 +25,10 @@ namespace Adopetz.Api.Infrastructure.Persistence.Configurations
                 .HasColumnName("password")
                 .IsRequired();
 
+            builder.Property(x => x.RequiresPasswordChange)
+                .HasColumnName("requires_password_change")
+                .IsRequired();
+
             builder.HasMany(x => x.Tokens)
                 .WithOne(t => t.User)
                 .HasForeignKey(t => t.UserId)

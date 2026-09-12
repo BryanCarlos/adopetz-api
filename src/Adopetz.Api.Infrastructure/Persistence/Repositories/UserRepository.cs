@@ -16,9 +16,19 @@ namespace Adopetz.Api.Infrastructure.Persistence.Repositories
             context.Users.Remove(user);
         }
 
+        public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default)
+        {
+            return await context.Users.AnyAsync(x => x.Email == email, cancellationToken);
+        }
+
         public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
             return await context.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+        }
+
+        public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await context.Users.FindAsync(id);
         }
     }
 }

@@ -131,6 +131,10 @@ namespace Adopetz.Api.Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("password");
 
+                    b.Property<bool>("RequiresPasswordChange")
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_password_change");
+
                     b.HasKey("Id");
 
                     b.ToTable("users", (string)null);
