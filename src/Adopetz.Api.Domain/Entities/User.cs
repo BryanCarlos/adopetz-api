@@ -3,7 +3,9 @@
     public class User
     {
         public Guid Id { get; private set; }
+        public string Name { get; private set; } = string.Empty;
         public string Email { get; private set; } = string.Empty;
+        public string Phone { get; private set; } = string.Empty;
         public string HashedPassword { get; private set; } = string.Empty;
         public bool RequiresPasswordChange { get; private set; } = true;
         private List<RefreshToken> _tokens { get; set; } = new List<RefreshToken>();
@@ -13,12 +15,14 @@
 
         private User() { }
 
-        public static User Create(string email, string hashedPassword)
+        public static User Create(string name, string email, string phone, string hashedPassword)
         {
             return new User
             {
+                Name = name,
                 Id = Guid.CreateVersion7(),
                 Email = email,
+                Phone = phone,
                 HashedPassword = hashedPassword,
                 RequiresPasswordChange = true
             };

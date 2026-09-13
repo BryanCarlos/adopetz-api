@@ -30,6 +30,9 @@ namespace Adopetz.Api.Infrastructure.Persistence.Configurations
                 .HasColumnName("adopted")
                 .IsRequired();
 
+            builder.Property(x => x.AgeInYears)
+                .HasColumnName("age_in_years");
+
             builder.Property(x => x.UserId)
                 .HasColumnName("user_id")
                 .IsRequired();

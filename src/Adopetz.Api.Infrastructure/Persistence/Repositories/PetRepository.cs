@@ -1,4 +1,5 @@
-﻿using Adopetz.Api.Domain.Common.Models;
+﻿using Adopetz.Api.Domain.Common.Enums;
+using Adopetz.Api.Domain.Common.Models;
 using Adopetz.Api.Domain.Entities;
 using Adopetz.Api.Domain.Interfaces;
 using Adopetz.Api.Infrastructure.Persistence.Utils;
@@ -20,10 +21,25 @@ namespace Adopetz.Api.Infrastructure.Persistence.Repositories
 
         public async Task<Pet?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await context.Pets.FindAsync(id, cancellationToken);
+            return await context.Pets
+                .Include(p => p.User)
+                .Include(p => p.Vaccines)
+                .Include(p => p.Images)
+                .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
         }
 
-        public Task<PaginatedList<Pet>> SearchAsync(int pageNumber, int pageSize, string? searchTerm = null, CancellationToken cancellationToken = default)
+        public async Task<PaginatedList<Pet>> GetPetsByUserIdAsync(Guid userId, int pageNumber, int pageSize, CancellationToken cancellationToken)
+        {
+            return await context.Pets
+                .AsNoTracking()
+                .Include(p => p.User)
+                .Include(p => p.Vaccines)
+                .Include(p => p.Images)
+                .OrderByDescending(p => p.RescueDate)
+                .ToPaginatedListAsync(pageNumber, pageSize, cancellationToken);
+        }
+
+        public Task<PaginatedList<Pet>> SearchAsync(int pageNumber, int pageSize, PetFilter filter, CancellationToken cancellationToken = default)
         {
             var query = context.Pets
                 .AsNoTracking()
@@ -32,18 +48,38 @@ namespace Adopetz.Api.Infrastructure.Persistence.Repositories
                 .Include(p => p.Images)
                 .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(searchTerm))
+            if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
             {
-                var term = searchTerm.Trim();
+                var term = filter.SearchTerm.Trim();
                 var pattern = $"%{term}%";
 
                 query = query.Where(p => 
-                EF.Functions.ILike(
-                    EF.Functions.Unaccent(p.Name), 
-                    EF.Functions.Unaccent(pattern)
+                    EF.Functions.ILike(
+                        EF.Functions.Unaccent(p.Name), 
+                        EF.Functions.Unaccent(pattern)
+                    ) ||
+                    EF.Functions.ILike(
+                        EF.Functions.Unaccent(p.Breed ?? ""),
+                        EF.Functions.Unaccent(pattern)
                     )
                 );
             }
+
+            if (filter.MinAge.HasValue)
+            {
+                query = query.Where(p => p.AgeInYears != null && p.AgeInYears >= filter.MinAge);
+            }
+            if (filter.MaxAge.HasValue)
+            {
+                query = query.Where(p => p.AgeInYears != null && p.AgeInYears <= filter.MaxAge);
+            }
+
+            query = filter.AdoptionStatus switch
+            {
+                AdoptionStatusFilter.Available => query.Where(p => !p.Adopted),
+                AdoptionStatusFilter.Adopted => query.Where(p => p.Adopted),
+                _ => query
+            };
 
             return query.ToPaginatedListAsync(pageNumber, pageSize, cancellationToken);
         }

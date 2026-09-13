@@ -34,6 +34,10 @@ namespace Adopetz.Api.Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("adopted");
 
+                    b.Property<int?>("AgeInYears")
+                        .HasColumnType("integer")
+                        .HasColumnName("age_in_years");
+
                     b.Property<string>("Breed")
                         .HasColumnType("text")
                         .HasColumnName("breed");

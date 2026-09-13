@@ -9,5 +9,6 @@ namespace Adopetz.Api.Domain.Interfaces
         void Add(User user);
         void Delete(User user);
         Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default);
+        Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }
