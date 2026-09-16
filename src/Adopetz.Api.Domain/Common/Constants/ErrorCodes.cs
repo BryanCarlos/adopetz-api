@@ -28,6 +28,9 @@
                 public const string InvalidPassword = "USER_INVALID_PASSWORD";
                 public const string PasswordTooShort = "USER_PASSWORD_TOO_SHORT";
                 public const string PasswordsMustNotMatch = "USER_PASSWORDS_MUST_NOT_MATCH";
+                public const string PasswordMustHaveUppercase = "USER_PASSWORDS_MUST_HAVE_UPPERCASE";
+                public const string PasswordMustHaveLowercase = "USER_PASSWORDS_MUST_HAVE_LOWERCASE";
+                public const string PasswordMustHaveNumber = "USER_PASSWORDS_MUST_HAVE_NUMBER";
             }
         }
 

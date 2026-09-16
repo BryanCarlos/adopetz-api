@@ -16,8 +16,4 @@
     <ProjectReference Include="..\Adopetz.Api.Domain\Adopetz.Api.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Users\Auth\Validators\" />
-  </ItemGroup>
-
 </Project>
