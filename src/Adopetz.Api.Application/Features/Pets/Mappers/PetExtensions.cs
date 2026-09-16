@@ -13,6 +13,7 @@ namespace Adopetz.Api.Application.Features.Pets.Mappers
                 (
                     Id: pet.Id,
                     Name: pet.Name,
+                    About: pet.About,
                     Breed: pet.Breed,
                     AgeInYears: pet.AgeInYears,
                     RescueDate: pet.RescueDate,

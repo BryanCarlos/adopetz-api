@@ -69,7 +69,9 @@ namespace Adopetz.Api.Application.Features.Users.Auth
             var hashedPassword = passwordHasher.Hash(request.Password);
 
             var newUser = User.Create(
+                name: request.Name,
                 email: request.Email,
+                phone: request.Phone,
                 hashedPassword: hashedPassword
             );
 

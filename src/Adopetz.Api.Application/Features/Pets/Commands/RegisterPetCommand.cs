@@ -6,6 +6,7 @@ namespace Adopetz.Api.Application.Features.Pets.Commands
     public record RegisterPetCommand(
         string Name,
         string? Breed,
+        string About,
         DateTime? RescueDate,
         Guid UserId,
         int AgeInYears,

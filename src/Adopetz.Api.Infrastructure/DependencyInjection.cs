@@ -5,6 +5,8 @@ using Adopetz.Api.Infrastructure.Authentication;
 using Adopetz.Api.Infrastructure.Persistence;
 using Adopetz.Api.Infrastructure.Persistence.Repositories;
 using Adopetz.Api.Infrastructure.Persistence.Utils;
+using Adopetz.Api.Infrastructure.Services;
+using CloudinaryDotNet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +32,12 @@ namespace Adopetz.Api.Infrastructure
                 services.AddScoped<IUnitOfWork, UnitOfWork>();
                 services.AddScoped<IUserRepository, UserRepository>();
                 services.AddScoped<IPetRepository, PetRepository>();
+
+                var cloudinaryUrl = configuration["CLOUDINARY_URL"];
+                var cloudinary = new Cloudinary(cloudinaryUrl);
+                services.AddSingleton(cloudinary);
+
+                services.AddScoped<IFileStorageService, CloudinaryStorageService>();
 
                 return services;
             }

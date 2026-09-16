@@ -51,17 +51,10 @@ namespace Adopetz.Api.Infrastructure.Persistence.Repositories
             if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
             {
                 var term = filter.SearchTerm.Trim();
-                var pattern = $"%{term}%";
 
-                query = query.Where(p => 
-                    EF.Functions.ILike(
-                        EF.Functions.Unaccent(p.Name), 
-                        EF.Functions.Unaccent(pattern)
-                    ) ||
-                    EF.Functions.ILike(
-                        EF.Functions.Unaccent(p.Breed ?? ""),
-                        EF.Functions.Unaccent(pattern)
-                    )
+                query = query.Where(p =>
+                    EF.Functions.ToTsVector("portuguese", p.Name + " " + p.About + " " + (p.Breed ?? ""))
+                    .Matches(EF.Functions.PlainToTsQuery("portuguese", term))
                 );
             }
 

@@ -24,7 +24,7 @@ namespace Adopetz.Api.Application.Features.Pets.Commands
                 throw new ForbiddenAccessException("You do not have permission to update this pet.", ErrorCodes.Common.ForbiddenAccess);
             }
 
-            pet.Update(request.Name, request.Adopted, request.Breed, request.RescueDate, request.AgeInYears);
+            pet.Update(request.Name, request.Adopted, request.Breed, request.About, request.RescueDate, request.AgeInYears);
 
             await uow.CommitAsync(cancellationToken);
         }

@@ -24,7 +24,7 @@ namespace Adopetz.Api.Application.Features.Pets.Commands
                 throw new NotFoundException($"User with ID {request.UserId} not found.", ErrorCodes.User.NotFound);
             }
 
-            var pet = Pet.Create(request.Name, request.Breed, request.RescueDate, request.UserId, request.AgeInYears);
+            var pet = Pet.Create(request.Name, request.Breed, request.About, request.RescueDate, request.UserId, request.AgeInYears);
 
             if (request.Vaccines != null)
             {
@@ -43,9 +43,11 @@ namespace Adopetz.Api.Application.Features.Pets.Commands
 
                 foreach (var imageCmd in request.PetImages)
                 {
+                    var folderPath = $"adopetz_pets/{pet.Id}";
+
                     var imageUrl = await imageProcessingService.ProcessAndUploadAsync(
                         imageCmd.Base64Data,
-                        imageCmd.FileName,
+                        folderPath,
                         imageCmd.ContentType,
                         cancellationToken
                     );

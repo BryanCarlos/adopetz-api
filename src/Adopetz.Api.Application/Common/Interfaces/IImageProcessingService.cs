@@ -4,7 +4,7 @@
     {
         Task<string> ProcessAndUploadAsync(
             string base64Data,
-            string fileName,
+            string folderPath,
             string contentType,
             CancellationToken cancellationToken);
     }

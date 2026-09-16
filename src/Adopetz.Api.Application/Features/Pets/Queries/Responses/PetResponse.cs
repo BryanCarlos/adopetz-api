@@ -3,6 +3,7 @@
     public record PetResponse(
         Guid Id,
         string Name,
+        string About,
         string? Breed,
         int? AgeInYears,
         DateTime? RescueDate,

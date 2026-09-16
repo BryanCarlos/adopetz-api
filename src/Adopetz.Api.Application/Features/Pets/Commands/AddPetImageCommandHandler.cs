@@ -32,9 +32,11 @@ namespace Adopetz.Api.Application.Features.Pets.Commands
                 throw new DomainException("The system allows uploading no more than 4 images per profile.", ErrorCodes.Pet.Image.MaxImagesLimit);
             }
 
+            var folderPath = $"adopetz_pets/{pet.Id}";
+
             var imageUrl = await imageProcessingService.ProcessAndUploadAsync(
                 request.Base64Data,
-                request.FileName,
+                folderPath,
                 request.ContentType,
                 cancellationToken
             );

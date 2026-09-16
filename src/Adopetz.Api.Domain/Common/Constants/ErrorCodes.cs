@@ -45,6 +45,7 @@
                 public const string NotFound = "IMAGE_NOT_FOUND";
                 public const string ImageTooLarge = "PET_IMAGE_TOO_LARGE";
                 public const string MaxImagesLimit = "PET_MAX_IMAGES_EXCEEDED";
+                public const string FailedUpload = "PET_IMAGE_FAILED_UPLOAD";
             }
         }
     }

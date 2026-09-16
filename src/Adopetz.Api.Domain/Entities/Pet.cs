@@ -9,6 +9,7 @@ namespace Adopetz.Api.Domain.Entities
         public Guid Id { get; private set; }
         public string Name { get; private set; } = string.Empty;
         public string? Breed { get; private set; } = null;
+        public string About { get; private set; } = string.Empty;
         public DateTime? RescueDate { get; private set; } = null;
         public bool Adopted { get; private set; } = false;
         public int? AgeInYears { get; private set; } = null;
@@ -24,24 +25,26 @@ namespace Adopetz.Api.Domain.Entities
 
         private Pet() { }
 
-        public static Pet Create(string name, string? breed, DateTime? rescueDate, Guid userId, int? ageInYears)
+        public static Pet Create(string name, string? breed, string about, DateTime? rescueDate, Guid userId, int? ageInYears)
         {
             return new Pet
             {
                 Id = Guid.CreateVersion7(),
                 Name = name,
                 Breed = breed,
+                About = about,
                 RescueDate = rescueDate,
                 UserId = userId,
                 AgeInYears = ageInYears
             };
         }
 
-        public void Update(string name, bool adopted, string? breed, DateTime? rescueDate, int? ageInYears)
+        public void Update(string name, bool adopted, string? breed, string about, DateTime? rescueDate, int? ageInYears)
         {
             Name = name;
             Adopted = adopted;
             Breed = breed;
+            About = about;
             RescueDate = rescueDate;
             AgeInYears = ageInYears;
         }
