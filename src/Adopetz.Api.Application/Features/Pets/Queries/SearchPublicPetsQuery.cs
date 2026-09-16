@@ -1,0 +1,12 @@
+﻿using Adopetz.Api.Application.Common.Models;
+using Adopetz.Api.Application.Features.Pets.Queries.Responses;
+using Adopetz.Api.Domain.Common.Models;
+using MediatR;
+
+namespace Adopetz.Api.Application.Features.Pets.Queries
+{
+    public record SearchPublicPetsQuery(
+        PaginationQuery Pagination,
+        PetFilter Filter
+    ) : IRequest<PaginatedList<PetResponse>>;
+}

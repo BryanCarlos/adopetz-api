@@ -9,7 +9,7 @@ namespace Adopetz.Api.Application.Features.Pets.Commands
         string About,
         DateTime? RescueDate,
         Guid UserId,
-        int AgeInYears,
+        int? AgeInYears,
         IList<CreatePetImageRequest> PetImages,
         IList<CreateVaccineRequest>? Vaccines
     ) : IRequest<Guid>;

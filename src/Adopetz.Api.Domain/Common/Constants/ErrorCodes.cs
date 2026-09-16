@@ -5,6 +5,9 @@
         public static class Common
         {
             public const string Required = "REQUIRED";
+            public const string MaximumLength = "MAXIMUM_LENGTH";
+            public const string InvalidRange = "INVALID_RANGE";
+            public const string InvalidValue = "INVALID_VALUE";
             public const string ForbiddenAccess = "FORBIDDEN_ACCESS";
             public const string ExternalServiceProblem = "EXTERNAL_SERVICE_PROBLEM";
 
@@ -46,6 +49,7 @@
                 public const string ImageTooLarge = "PET_IMAGE_TOO_LARGE";
                 public const string MaxImagesLimit = "PET_MAX_IMAGES_EXCEEDED";
                 public const string FailedUpload = "PET_IMAGE_FAILED_UPLOAD";
+                public const string InvalidFormat = "PET_IMAGE_INVALID_FORMAT";
             }
         }
     }
