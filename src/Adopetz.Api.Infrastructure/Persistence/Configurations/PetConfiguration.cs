@@ -23,6 +23,11 @@ namespace Adopetz.Api.Infrastructure.Persistence.Configurations
             builder.Property(x => x.Breed)
                 .HasColumnName("breed");
 
+            builder.Property(x => x.About)
+                .HasColumnName("about")
+                .HasMaxLength(500)
+                .IsRequired();
+
             builder.Property(x => x.RescueDate)
                 .HasColumnName("rescue_date");
 
@@ -30,9 +35,16 @@ namespace Adopetz.Api.Infrastructure.Persistence.Configurations
                 .HasColumnName("adopted")
                 .IsRequired();
 
+            builder.Property(x => x.AgeInYears)
+                .HasColumnName("age_in_years");
+
             builder.Property(x => x.UserId)
                 .HasColumnName("user_id")
                 .IsRequired();
+
+            builder.HasIndex(p => new { p.Name, p.About, p.Breed })
+               .HasMethod("GIN")
+               .IsTsVectorExpressionIndex("portuguese");
 
             builder.HasMany(x => x.Vaccines)
                 .WithOne(v => v.Pet)

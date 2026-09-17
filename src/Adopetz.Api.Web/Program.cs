@@ -1,4 +1,5 @@
 
+using Adopetz.Api.Application;
 using Adopetz.Api.Infrastructure;
 using Adopetz.Api.Infrastructure.Persistence.Initializers;
 using Scalar.AspNetCore;
@@ -18,6 +19,7 @@ namespace Adopetz.Api.Web
             services.AddProblemDetails();
 
             services.AddInfrastructure(configuration);
+            services.AddApplication();
 
             services.AddScoped<AdopetzContextInitializer>();
 

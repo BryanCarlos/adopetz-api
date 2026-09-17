@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Adopetz.Api.Infrastructure.Persistence.Utils
 {
-    internal static class PaginationListExtensions
+    public static class QueryableExtensions
     {
         extension<T>(IQueryable<T> query)
         {

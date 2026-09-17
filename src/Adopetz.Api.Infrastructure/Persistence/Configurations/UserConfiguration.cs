@@ -16,13 +16,27 @@ namespace Adopetz.Api.Infrastructure.Persistence.Configurations
                 .HasColumnName("id")
                 .IsRequired();
 
+            builder.Property(x => x.Name)
+                .HasColumnName("name")
+                .IsRequired()
+                .HasMaxLength(255);
+
             builder.Property(x => x.Email)
                 .HasColumnName ("email")
                 .IsRequired()
                 .HasMaxLength(255);
 
+            builder.Property(x => x.Phone)
+                .HasColumnName("phone")
+                .IsRequired()
+                .HasMaxLength(20);
+
             builder.Property(x => x.HashedPassword)
                 .HasColumnName("password")
+                .IsRequired();
+
+            builder.Property(x => x.RequiresPasswordChange)
+                .HasColumnName("requires_password_change")
                 .IsRequired();
 
             builder.HasMany(x => x.Tokens)

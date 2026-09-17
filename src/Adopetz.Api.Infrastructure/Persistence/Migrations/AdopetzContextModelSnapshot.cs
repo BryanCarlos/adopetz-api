@@ -30,9 +30,19 @@ namespace Adopetz.Api.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("About")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("about");
+
                     b.Property<bool>("Adopted")
                         .HasColumnType("boolean")
                         .HasColumnName("adopted");
+
+                    b.Property<int?>("AgeInYears")
+                        .HasColumnType("integer")
+                        .HasColumnName("age_in_years");
 
                     b.Property<string>("Breed")
                         .HasColumnType("text")
@@ -54,6 +64,11 @@ namespace Adopetz.Api.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("Name", "About", "Breed")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "portuguese");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Name", "About", "Breed"), "GIN");
 
                     b.ToTable("pets", (string)null);
                 });
@@ -130,6 +145,22 @@ namespace Adopetz.Api.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("password");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("phone");
+
+                    b.Property<bool>("RequiresPasswordChange")
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_password_change");
 
                     b.HasKey("Id");
 
