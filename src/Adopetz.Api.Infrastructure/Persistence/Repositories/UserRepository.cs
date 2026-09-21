@@ -28,12 +28,24 @@ namespace Adopetz.Api.Infrastructure.Persistence.Repositories
 
         public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
-            return await context.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+            return await context.Users
+                .Include(u => u.Tokens)
+                .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
         }
 
         public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await context.Users.FindAsync(id);
+            return await context.Users
+                .Include(u => u.Tokens)
+                .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        }
+
+        public async Task<User?> GetByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
+        {
+            return await context.Users
+                .Include(u => u.Tokens)
+                .FirstOrDefaultAsync(u => u.Tokens.Any(t => t.Token == refreshToken), cancellationToken);
         }
     }
 }
+

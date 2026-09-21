@@ -2,6 +2,7 @@
 {
     public record UserTokensResponse(
         string AccessToken,
-        string RefreshToken
+        string RefreshToken,
+        DateTime RefreshTokenExpirationDate
     );
 }

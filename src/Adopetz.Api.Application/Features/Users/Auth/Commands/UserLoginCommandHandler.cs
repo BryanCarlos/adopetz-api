@@ -13,6 +13,7 @@ namespace Adopetz.Api.Application.Features.Users.Auth.Commands
         IUserRepository userRepository,
         IPasswordHasher passwordHasher,
         ITokenGenerator tokenGenerator,
+        IHasher hasher,
         IUnitOfWork uow) : IRequestHandler<UserLoginCommand, UserTokensResponse>
     {
         public async Task<UserTokensResponse> Handle(UserLoginCommand request, CancellationToken cancellationToken)
@@ -27,9 +28,11 @@ namespace Adopetz.Api.Application.Features.Users.Auth.Commands
             var accessToken = tokenGenerator.GenerateAccessToken(user, request.Now);
             var refreshToken = tokenGenerator.GenerateRefreshToken(request.Now);
 
+            var hashedRefreshToken = hasher.Hash(refreshToken.Token);
+
             var userRefreshToken = RefreshToken.Create(
                 user: user,
-                token: refreshToken.Token,
+                token: hashedRefreshToken,
                 expiresAt: refreshToken.ExpiresAt
             );
 
@@ -39,7 +42,8 @@ namespace Adopetz.Api.Application.Features.Users.Auth.Commands
 
             return new UserTokensResponse(
                 AccessToken: accessToken.Token,
-                RefreshToken: refreshToken.Token
+                RefreshToken: refreshToken.Token,
+                RefreshTokenExpirationDate: refreshToken.ExpiresAt
             );
         }
     }

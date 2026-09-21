@@ -1,4 +1,6 @@
-﻿namespace Adopetz.Api.Domain.Entities
+﻿using Adopetz.Api.Domain.Common.Exceptions;
+
+namespace Adopetz.Api.Domain.Entities
 {
     public class User
     {
@@ -9,7 +11,7 @@
         public string HashedPassword { get; private set; } = string.Empty;
         public bool RequiresPasswordChange { get; private set; } = true;
         private List<RefreshToken> _tokens { get; set; } = new List<RefreshToken>();
-        public IReadOnlyCollection<RefreshToken> Tokens => this._tokens.AsReadOnly();
+        public IReadOnlyCollection<RefreshToken> Tokens => this._tokens;
 
         public ICollection<Pet> Pets { get; private set; } = new List<Pet>();
 
@@ -37,6 +39,21 @@
         {
             this.HashedPassword = hashedPassword;
             this.RequiresPasswordChange = false;
+        }
+
+        public bool IsRefreshTokenValid(string refreshToken, DateTime now)
+        {
+            var token = this._tokens.FirstOrDefault(t => t.Token == refreshToken);
+            return token?.ExpiresAt > now;
+        }
+
+        public void RemoveRefreshToken(string refreshToken)
+        {
+            var token = this._tokens.FirstOrDefault(t => t.Token == refreshToken);
+            if (token != null)
+            {
+                this._tokens.Remove(token);
+            }
         }
     }
 }

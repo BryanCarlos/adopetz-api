@@ -2,10 +2,11 @@
 
 namespace Adopetz.Api.Domain.Interfaces
 {
-    public interface IUserRepository
+    public interface  IUserRepository
     {
         Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
+        Task<User?> GetByRefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
         void Add(User user);
         void Delete(User user);
         Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default);

@@ -9,6 +9,7 @@
             public const string InvalidRange = "INVALID_RANGE";
             public const string InvalidValue = "INVALID_VALUE";
             public const string ForbiddenAccess = "FORBIDDEN_ACCESS";
+            public const string UnauthorizedAccess = "UNAUTHORIZED_ACCESS";
             public const string ExternalServiceProblem = "EXTERNAL_SERVICE_PROBLEM";
 
             public static class Security
@@ -21,6 +22,7 @@
         {
             public const string EmailAlreadyInUse = "USER_EMAIL_ALREADY_IN_USE";
             public const string NotFound = "USER_NOT_FOUND";
+            public const string InvalidToken = "INVALID_USER_TOKEN";
 
             public static class Validation
             {

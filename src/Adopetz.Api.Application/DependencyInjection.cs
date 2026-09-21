@@ -21,6 +21,7 @@ namespace Adopetz.Api.Application
                     cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
                 });
 
+
                 services.AddScoped<IImageProcessingService, ImageProcessingService>();
 
                 return services;

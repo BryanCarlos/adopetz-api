@@ -2,6 +2,7 @@
 using Adopetz.Api.Application;
 using Adopetz.Api.Infrastructure;
 using Adopetz.Api.Infrastructure.Persistence.Initializers;
+using Adopetz.Api.Web.Common.Extensions;
 using Scalar.AspNetCore;
 
 namespace Adopetz.Api.Web
@@ -16,40 +17,13 @@ namespace Adopetz.Api.Web
             var configuration = builder.Configuration;
             var services = builder.Services;
 
-            services.AddProblemDetails();
-
             services.AddInfrastructure(configuration);
             services.AddApplication();
-
-            services.AddScoped<AdopetzContextInitializer>();
-
-            builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+            services.AddWebServices(configuration);
 
             var app = builder.Build();
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var initializer = scope.ServiceProvider.GetRequiredService<AdopetzContextInitializer>();
-                await initializer.InitializeAsync();
-            }
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-                app.MapScalarApiReference();
-
-                app.MapGet("", () => Results.Redirect("/scalar"));
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
+            await app.UseWebPipeline();
 
             app.Run();
         }
