@@ -25,4 +25,8 @@
     <ProjectReference Include="..\Adopetz.Api.Infrastructure\Adopetz.Api.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Pets\" />
+  </ItemGroup>
+
 </Project>

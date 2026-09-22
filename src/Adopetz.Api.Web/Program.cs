@@ -20,6 +20,7 @@ namespace Adopetz.Api.Web
             services.AddInfrastructure(configuration);
             services.AddApplication();
             services.AddWebServices(configuration);
+            services.AddWebRateLimiting();
 
             var app = builder.Build();
 

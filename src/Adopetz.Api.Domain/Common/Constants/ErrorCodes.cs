@@ -10,6 +10,7 @@
             public const string InvalidValue = "INVALID_VALUE";
             public const string ForbiddenAccess = "FORBIDDEN_ACCESS";
             public const string UnauthorizedAccess = "UNAUTHORIZED_ACCESS";
+            public const string TooManyRequests = "TOO_MANY_REQUESTS";
             public const string ExternalServiceProblem = "EXTERNAL_SERVICE_PROBLEM";
 
             public static class Security

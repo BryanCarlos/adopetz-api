@@ -1,11 +1,13 @@
 ﻿using Adopetz.Api.Application.Common.Exceptions;
 using Adopetz.Api.Application.Features.Users.Auth.Commands;
 using Adopetz.Api.Domain.Common.Constants;
+using Adopetz.Api.Web.Common.Constants;
 using Adopetz.Api.Web.Common.Extensions;
 using Adopetz.Api.Web.Models.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Adopetz.Api.Web.Controllers.Users.Auth
 {
@@ -17,6 +19,7 @@ namespace Adopetz.Api.Web.Controllers.Users.Auth
 
         [AllowAnonymous]
         [HttpPost("login")]
+        [EnableRateLimiting(RateLimitingPolicies.LoginStrict)]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
         {
             var command = new UserLoginCommand(
@@ -43,6 +46,7 @@ namespace Adopetz.Api.Web.Controllers.Users.Auth
 
         [AllowAnonymous]
         [HttpPost("refresh-token")]
+        [EnableRateLimiting(RateLimitingPolicies.LoginStrict)]
         public async Task<IActionResult> RefreshToken()
         {
             if (!Request.Cookies.TryGetValue(RefreshTokenCookieName, out var currentRefreshToken))

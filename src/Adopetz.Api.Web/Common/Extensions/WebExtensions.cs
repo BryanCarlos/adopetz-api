@@ -1,4 +1,7 @@
-﻿using Adopetz.Api.Infrastructure.Persistence.Initializers;
+﻿using Adopetz.Api.Domain.Common.Constants;
+using Adopetz.Api.Infrastructure.Persistence.Initializers;
+using Adopetz.Api.Web.Common.Constants;
+using Adopetz.Api.Web.Common.Exceptions;
 using Adopetz.Api.Web.Common.OpenApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -84,6 +87,32 @@ namespace Adopetz.Api.Web.Common.Extensions
 
                 return services;
             }
+
+            public IServiceCollection AddWebRateLimiting()
+            {
+                services.AddRateLimiter(options =>
+                {
+                    options.AddPolicy(RateLimitingPolicies.LoginStrict, httpContext =>
+                    {
+                        var clientIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                        return RateLimitPartition.GetFixedWindowLimiter(clientIp, _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 5,
+                            Window = TimeSpan.FromMinutes(1),
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            QueueLimit = 0
+                        });
+                    });
+
+                    options.OnRejected = async (_, _) =>
+                    {
+                        throw new TooManyRequestsException("Too many login tries. Wait a minute and try again.", ErrorCodes.Common.TooManyRequests);
+                    };
+                });
+
+                return services;
+            }
         }
 
         extension (WebApplication app)
@@ -114,6 +143,8 @@ namespace Adopetz.Api.Web.Common.Extensions
                 {
                     app.UseHttpsRedirection();
                 }
+
+                app.UseRateLimiter();
 
                 app.UseAuthentication();
                 app.UseAuthorization();
