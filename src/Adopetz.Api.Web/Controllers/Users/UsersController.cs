@@ -20,7 +20,7 @@ namespace Adopetz.Api.Web.Controllers.Users
 
         [MasterApiKey]
         [AllowAnonymous]
-        [HttpPost("user")]
+        [HttpPost]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserCommand command)
         {
             await mediator.Send(command);
@@ -92,6 +92,26 @@ namespace Adopetz.Api.Web.Controllers.Users
             );
 
             await mediator.Send(command);
+
+            return NoContent();
+        }
+
+        [HttpPost("auth/logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var refreshToken = Request.Cookies[RefreshTokenCookieName];
+
+            if (!string.IsNullOrWhiteSpace(refreshToken))
+            {
+                var command = new LogoutCommand(
+                    UserId: User.GetUserId(),
+                    RefreshToken: refreshToken
+                );
+
+                await mediator.Send(command);
+
+                Response.Cookies.Delete(RefreshTokenCookieName);
+            }
 
             return NoContent();
         }

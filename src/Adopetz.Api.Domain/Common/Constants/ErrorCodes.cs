@@ -36,6 +36,11 @@
                 public const string PasswordMustHaveLowercase = "USER_PASSWORDS_MUST_HAVE_LOWERCASE";
                 public const string PasswordMustHaveNumber = "USER_PASSWORDS_MUST_HAVE_NUMBER";
             }
+
+            public static class Security
+            {
+                public const string PasswordChangeRequired = "PASSWORD_CHANGE_REQUIRED";
+            }
         }
 
         public static class Pet

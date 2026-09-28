@@ -236,11 +236,15 @@ namespace Adopetz.Api.Web.Common.Extensions
                     app.UseHsts();
                 }
 
+                app.UseExceptionHandler();
+
                 app.UseHttpsRedirection();
 
                 app.UseAuthentication();
                 app.UseAuthorization();
                 app.UseRateLimiter();
+
+                app.UseMiddleware<ChangePasswordMiddleware>();
 
                 app.MapControllers().RequireAuthorization();
 

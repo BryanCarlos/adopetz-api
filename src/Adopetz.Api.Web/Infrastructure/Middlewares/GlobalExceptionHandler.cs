@@ -32,10 +32,23 @@ namespace Adopetz.Api.Web.Infrastructure.Middlewares
                         ConflictException => StatusCodes.Status400BadRequest,
                         UnauthorizedException => StatusCodes.Status401Unauthorized,
                         ForbiddenAccessException => StatusCodes.Status403Forbidden,
+                        PasswordChangeRequiredException => StatusCodes.Status403Forbidden,
                         NotFoundException => StatusCodes.Status404NotFound,
                         DomainException => StatusCodes.Status422UnprocessableEntity,
                         ExternalServiceException => StatusCodes.Status502BadGateway,
                         _ => StatusCodes.Status400BadRequest
+                    };
+
+                    title = adopetzException switch
+                    {
+                        ConflictException => "A conflict occurred",
+                        UnauthorizedException => "Unauthorized access",
+                        ForbiddenAccessException => "Forbidden access",
+                        PasswordChangeRequiredException => "Password change required",
+                        NotFoundException => "Resource not found",
+                        DomainException => "Unprocessable entity",
+                        ExternalServiceException => "External service is down",
+                        _ => "Unexpected error"
                     };
 
                     errorCode = adopetzException.ErrorCode;
