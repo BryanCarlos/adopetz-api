@@ -3,6 +3,7 @@ using Adopetz.Api.Infrastructure.Persistence.Initializers;
 using Adopetz.Api.Web.Common.Constants;
 using Adopetz.Api.Web.Common.Exceptions;
 using Adopetz.Api.Web.Common.OpenApi;
+using Adopetz.Api.Web.Infrastructure.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -31,6 +32,7 @@ namespace Adopetz.Api.Web.Common.Extensions
                 });
 
                 services.AddProblemDetails();
+                services.AddExceptionHandler<GlobalExceptionHandler>();
 
                 services.AddCors(options =>
                 {

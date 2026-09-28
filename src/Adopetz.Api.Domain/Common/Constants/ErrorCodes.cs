@@ -4,6 +4,7 @@
     {
         public static class Common
         {
+            public const string ValidationFailure = "VALIDATION_FAILURE";
             public const string Required = "REQUIRED";
             public const string MaximumLength = "MAXIMUM_LENGTH";
             public const string InvalidRange = "INVALID_RANGE";

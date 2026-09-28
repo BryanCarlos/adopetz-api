@@ -76,7 +76,7 @@ namespace Adopetz.Api.Domain.Entities
 
             if (_images.Count >= 4)
             {
-                throw new DomainException("O limite máximo é de 4 imagens.", ErrorCodes.Pet.Image.MaxImagesLimit);
+                throw new DomainException("The maximum limit is 4 images.", ErrorCodes.Pet.Image.MaxImagesLimit);
             }
 
             var image = PetImage.Create(this, filePath);
