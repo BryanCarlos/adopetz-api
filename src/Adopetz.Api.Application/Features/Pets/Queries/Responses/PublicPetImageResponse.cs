@@ -1,7 +1,6 @@
 ﻿namespace Adopetz.Api.Application.Features.Pets.Queries.Responses
 {
-    public record PetImageResponse(
-        Guid Id,
+    public record PublicPetImageResponse(
         string FilePath
     );
 }

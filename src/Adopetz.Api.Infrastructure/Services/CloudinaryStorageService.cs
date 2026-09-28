@@ -12,9 +12,27 @@ namespace Adopetz.Api.Infrastructure.Services
         public async Task DeleteImageAsync(string imageUrl, CancellationToken cancellationToken)
         {
             var uri = new Uri(imageUrl);
-            var pathSegments = uri.AbsolutePath.Split('/');
-            var fileNameWithExtension = pathSegments[^1];
-            var publicId = Path.GetFileNameWithoutExtension(fileNameWithExtension);
+            var segments = uri.AbsolutePath.Split('/');
+
+            var uploadIndex = Array.IndexOf(segments, "upload");
+            if (uploadIndex == -1)
+            {
+                return;
+            }
+
+            var startIndex = uploadIndex + 1;
+            if (segments[startIndex].StartsWith('v') && segments[startIndex].Length > 1 && char.IsDigit(segments[startIndex][1]))
+            {
+                startIndex++; // Ignora a versão
+            }
+
+            var publicIdSegments = segments.Skip(startIndex).ToArray();
+            var publicIdWithExtension = string.Join("/", publicIdSegments);
+
+            int lastDotIndex = publicIdWithExtension.LastIndexOf('.');
+            var publicId = lastDotIndex != -1
+                ? publicIdWithExtension.Substring(0, lastDotIndex)
+                : publicIdWithExtension;
 
             var deletionParams = new DeletionParams(publicId);
 

@@ -7,9 +7,16 @@ namespace Adopetz.Api.Application.Features.Pets.Mappers
     {
         extension (PetImage image)
         {
-            public PetImageResponse ToResponse()
+            public PublicPetImageResponse ToResponse()
             {
-                return new PetImageResponse(
+                return new PublicPetImageResponse(
+                    FilePath: image.FilePath
+                );
+            }
+
+            public ManagerPetImageResponse ToManagerResponse()
+            {
+                return new ManagerPetImageResponse(
                     Id: image.Id,
                     FilePath: image.FilePath
                 );

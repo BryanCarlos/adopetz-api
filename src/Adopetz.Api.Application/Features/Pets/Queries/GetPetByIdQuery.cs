@@ -3,5 +3,5 @@ using MediatR;
 
 namespace Adopetz.Api.Application.Features.Pets.Queries
 {
-    public record GetPetByIdQuery(Guid Id) : IRequest<PetResponse>;
+    public record GetPetByIdQuery(Guid Id) : IRequest<PublicPetResponse>;
 }

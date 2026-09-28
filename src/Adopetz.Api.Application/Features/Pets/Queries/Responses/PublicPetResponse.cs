@@ -1,14 +1,14 @@
 ﻿namespace Adopetz.Api.Application.Features.Pets.Queries.Responses
 {
-    public record PetResponse(
-        Guid Id,
+    public record PublicPetResponse(
         string Name,
         string About,
+        bool IsAdopted,
         string? Breed,
         int? AgeInYears,
         DateTime? RescueDate,
         UserResponse Manager,
-        IReadOnlyList<VaccineResponse> Vaccines,
-        IReadOnlyList<PetImageResponse> Images
+        IReadOnlyList<PublicVaccineResponse> Vaccines,
+        IReadOnlyList<PublicPetImageResponse> Images
     );
 }

@@ -4,6 +4,9 @@ using Adopetz.Api.Web.Common.Constants;
 using Adopetz.Api.Web.Common.Exceptions;
 using Adopetz.Api.Web.Common.OpenApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Security.Claims;
@@ -22,6 +25,11 @@ namespace Adopetz.Api.Web.Common.Extensions
         {
             public IServiceCollection AddWebServices(IConfiguration configuration)
             {
+                services.Configure<KestrelServerOptions>(options =>
+                {
+                    options.Limits.MaxRequestBodySize = 2 * 1024 * 1024;
+                });
+
                 services.AddProblemDetails();
 
                 services.AddCors(options =>
@@ -52,6 +60,11 @@ namespace Adopetz.Api.Web.Common.Extensions
                     });
 
                 services.AddAuthorization();
+
+                services.Configure<ApiBehaviorOptions>(options =>
+                {
+                    options.SuppressModelStateInvalidFilter = true;
+                });
 
                 services.AddScoped<AdopetzContextInitializer>();
 
@@ -85,6 +98,13 @@ namespace Adopetz.Api.Web.Common.Extensions
                     });
                 });
 
+                services.AddHsts(options =>
+                {
+                    options.MaxAge = TimeSpan.FromDays(365);
+                    options.IncludeSubDomains = true;
+                    options.Preload = true;
+                });
+
                 return services;
             }
 
@@ -92,6 +112,8 @@ namespace Adopetz.Api.Web.Common.Extensions
             {
                 services.AddRateLimiter(options =>
                 {
+                    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
                     options.AddPolicy(RateLimitingPolicies.LoginStrict, httpContext =>
                     {
                         var clientIp = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
@@ -105,9 +127,77 @@ namespace Adopetz.Api.Web.Common.Extensions
                         });
                     });
 
-                    options.OnRejected = async (_, _) =>
+                    options.AddPolicy(RateLimitingPolicies.PublicQueryStrict, httpContext =>
                     {
-                        throw new TooManyRequestsException("Too many login tries. Wait a minute and try again.", ErrorCodes.Common.TooManyRequests);
+                        var identifier = string.Empty;
+
+                        if (httpContext.User.Identity?.IsAuthenticated == true)
+                        {
+                            identifier = httpContext.User.GetUserId().ToString();
+                        }
+                        else
+                        {
+                            identifier = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+                        }
+
+                        return RateLimitPartition.GetSlidingWindowLimiter(identifier, _ => new SlidingWindowRateLimiterOptions
+                        {
+                            PermitLimit = 60,
+                            QueueLimit = 0,
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            SegmentsPerWindow = 6,
+                            Window = TimeSpan.FromMinutes(1)
+                        });
+                    });
+
+                    options.AddPolicy(RateLimitingPolicies.PetRegisterStrict, httpContext =>
+                    {
+                        var userId = httpContext.User.GetUserId();
+
+                        return RateLimitPartition.Get(userId, _ =>
+                            RateLimiter.CreateChained(
+                                new ConcurrencyLimiter(new ConcurrencyLimiterOptions
+                                {
+                                    PermitLimit = 5,
+                                    QueueLimit = 5,
+                                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+                                }),
+                                new FixedWindowRateLimiter(new FixedWindowRateLimiterOptions
+                                {
+                                    PermitLimit = 100,
+                                    Window = TimeSpan.FromDays(1),
+                                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                                    QueueLimit = 0
+                                })
+                            )
+                        );
+                    });
+
+                    options.AddPolicy(RateLimitingPolicies.PetImageRegisterStrict, httpContext =>
+                    {
+                        return RateLimitPartition.Get(httpContext.User.GetUserId(), _ =>
+                            RateLimiter.CreateChained(
+                                new ConcurrencyLimiter(new ConcurrencyLimiterOptions
+                                {
+                                    PermitLimit = 5,
+                                    QueueLimit = 5,
+                                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+                                }),
+
+                                new FixedWindowRateLimiter(new FixedWindowRateLimiterOptions
+                                {
+                                    PermitLimit = 300,
+                                    Window = TimeSpan.FromDays(1),
+                                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                                    QueueLimit = 0
+                                })
+                            )
+                        );
+                    });
+
+                    options.OnRejected = (_, _) =>
+                    {
+                        throw new TooManyRequestsException("Too many tries. Try again later.", ErrorCodes.Common.TooManyRequests);
                     };
                 });
 
@@ -137,17 +227,18 @@ namespace Adopetz.Api.Web.Common.Extensions
                             .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
                     });
 
-                    app.MapGet("", () => Results.Redirect("/scalar"));
+                    app.UseDeveloperExceptionPage();
                 }
                 else
                 {
-                    app.UseHttpsRedirection();
+                    app.UseHsts();
                 }
 
-                app.UseRateLimiter();
+                app.UseHttpsRedirection();
 
                 app.UseAuthentication();
                 app.UseAuthorization();
+                app.UseRateLimiter();
 
                 app.MapControllers().RequireAuthorization();
 

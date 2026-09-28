@@ -8,9 +8,9 @@ using MediatR;
 
 namespace Adopetz.Api.Application.Features.Pets.Queries
 {
-    public class GetMyPetsQueryHandler(IPetRepository petRepository) : IRequestHandler<GetMyPetsQuery, PaginatedList<PetResponse>>
+    public class GetMyPetsQueryHandler(IPetRepository petRepository) : IRequestHandler<GetMyPetsQuery, PaginatedList<ManagerPetResponse>>
     {
-        public async Task<PaginatedList<PetResponse>> Handle(GetMyPetsQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<ManagerPetResponse>> Handle(GetMyPetsQuery request, CancellationToken cancellationToken)
         {
             var pets = await petRepository.GetPetsByUserIdAsync(
                 request.UserId,
@@ -19,7 +19,7 @@ namespace Adopetz.Api.Application.Features.Pets.Queries
                 cancellationToken
             );
 
-            return pets.ToPaginatedResponseList(p => p.ToResponse());
+            return pets.ToPaginatedResponseList(p => p.ToManagerResponse());
         }
     }
 }
