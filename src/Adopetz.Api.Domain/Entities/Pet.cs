@@ -18,10 +18,10 @@ namespace Adopetz.Api.Domain.Entities
         public User User { get; private set; } = null!;
 
         private List<Vaccine> _vaccines { get; set; } = new List<Vaccine>();
-        public IReadOnlyList<Vaccine> Vaccines => this._vaccines.AsReadOnly();
+        public IReadOnlyList<Vaccine> Vaccines => this._vaccines;
 
         private List<PetImage> _images { get; set; } = new List<PetImage>();
-        public IReadOnlyList<PetImage> Images => this._images.AsReadOnly();
+        public IReadOnlyList<PetImage> Images => this._images;
 
         private Pet() { }
 
@@ -76,7 +76,7 @@ namespace Adopetz.Api.Domain.Entities
 
             if (_images.Count >= 4)
             {
-                throw new DomainException("O limite máximo é de 4 imagens.", ErrorCodes.Pet.Image.MaxImagesLimit);
+                throw new DomainException("The maximum limit is 4 images.", ErrorCodes.Pet.Image.MaxImagesLimit);
             }
 
             var image = PetImage.Create(this, filePath);

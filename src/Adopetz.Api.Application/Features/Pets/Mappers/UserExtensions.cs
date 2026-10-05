@@ -10,7 +10,6 @@ namespace Adopetz.Api.Application.Features.Pets.Mappers
             public UserResponse ToResponse()
             {
                 return new UserResponse(
-                    Id: user.Id,
                     Email: user.Email,
                     Phone: user.Phone,
                     Name: user.Name

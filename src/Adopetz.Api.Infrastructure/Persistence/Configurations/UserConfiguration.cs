@@ -14,6 +14,7 @@ namespace Adopetz.Api.Infrastructure.Persistence.Configurations
 
             builder.Property(x => x.Id)
                 .HasColumnName("id")
+                .ValueGeneratedNever()
                 .IsRequired();
 
             builder.Property(x => x.Name)

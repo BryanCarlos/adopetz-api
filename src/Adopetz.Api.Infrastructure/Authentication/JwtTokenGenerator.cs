@@ -25,7 +25,7 @@ namespace Adopetz.Api.Infrastructure.Authentication
                 new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new(JwtRegisteredClaimNames.Jti, Guid.CreateVersion7().ToString()),
                 new(JwtRegisteredClaimNames.Email, user.Email),
-                new("requires_password_change", user.RequiresPasswordChange.ToString().ToLowerInvariant())
+                new("requiresPasswordChange", user.RequiresPasswordChange.ToString().ToLowerInvariant())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Token));

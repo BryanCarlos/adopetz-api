@@ -8,9 +8,9 @@ using MediatR;
 namespace Adopetz.Api.Application.Features.Pets.Queries
 {
     public class GetPetByIdQueryHandler(
-        IPetRepository petRepository) : IRequestHandler<GetPetByIdQuery, PetResponse>
+        IPetRepository petRepository) : IRequestHandler<GetPetByIdQuery, PublicPetResponse>
     {
-        public async Task<PetResponse> Handle(GetPetByIdQuery request, CancellationToken cancellationToken)
+        public async Task<PublicPetResponse> Handle(GetPetByIdQuery request, CancellationToken cancellationToken)
         {
             var pet = await petRepository.GetByIdAsync(request.Id, cancellationToken);
 

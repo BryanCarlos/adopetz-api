@@ -7,9 +7,17 @@ namespace Adopetz.Api.Application.Features.Pets.Mappers
     {
         extension (Vaccine vaccine)
         {
-            public VaccineResponse ToResponse()
+            public PublicVaccineResponse ToResponse()
             {
-                return new VaccineResponse(
+                return new PublicVaccineResponse(
+                    Name: vaccine.Name,
+                    ApplicationDate: vaccine.ApplicationDate
+                );
+            }
+
+            public ManagerVaccineResponse ToManagerResponse()
+            {
+                return new ManagerVaccineResponse(
                     Id: vaccine.Id,
                     Name: vaccine.Name,
                     ApplicationDate: vaccine.ApplicationDate

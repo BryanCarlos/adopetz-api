@@ -1,7 +1,6 @@
 ﻿namespace Adopetz.Api.Application.Features.Pets.Queries.Responses
 {
-    public record VaccineResponse(
-        Guid Id,
+    public record PublicVaccineResponse(
         string Name,
         DateTime? ApplicationDate
     );

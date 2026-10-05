@@ -5,5 +5,5 @@ using MediatR;
 
 namespace Adopetz.Api.Application.Features.Pets.Queries
 {
-    public record GetMyPetsQuery(Guid UserId, PaginationQuery Pagination) : IRequest<PaginatedList<PetResponse>>;
+    public record GetMyPetsQuery(Guid UserId, PaginationQuery Pagination) : IRequest<PaginatedList<ManagerPetResponse>>;
 }
