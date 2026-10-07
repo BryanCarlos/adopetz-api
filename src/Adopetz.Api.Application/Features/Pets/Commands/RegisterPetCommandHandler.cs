@@ -41,17 +41,18 @@ namespace Adopetz.Api.Application.Features.Pets.Commands
                     throw new DomainException("The system allows uploading no more than 4 images per profile.", ErrorCodes.Pet.Image.MaxImagesLimit);
                 }
 
-                foreach (var imageCmd in request.PetImages)
-                {
-                    var folderPath = $"adopetz_pets/{pet.Id}";
-
-                    var imageUrl = await imageProcessingService.ProcessAndUploadAsync(
+                var folderPath = $"adopetz_pets/{pet.Id}";
+                var imageUrls = await Task.WhenAll(request.PetImages.Select(imageCmd =>
+                    imageProcessingService.ProcessAndUploadAsync(
                         imageCmd.Base64Data,
                         folderPath,
                         imageCmd.ContentType,
                         cancellationToken
-                    );
+                    )));
 
+                // Keep entity mutations sequential and preserve the submitted image order.
+                foreach (var imageUrl in imageUrls)
+                {
                     pet.AddImage(imageUrl);
                 }
             }

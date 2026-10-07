@@ -28,6 +28,11 @@ var repository = new PetStub(pet);
 var unitOfWork = new UnitOfWorkStub();
 var tests = new (string Name, Func<Task> Run)[]
 {
+    ("Registration starts all four uploads before any finishes and preserves image order", RegistrationImageChecks.ParallelUploads),
+    ("Registration does not persist when an upload fails and waits for remaining uploads", RegistrationImageChecks.FailedUpload),
+    ("Registration rejects more than four images before uploading", RegistrationImageChecks.ImageLimit),
+    ("Registration without photos does not start uploads", RegistrationImageChecks.NoImages),
+    ("Registration passes cancellation to all uploads and does not persist cancelled work", RegistrationImageChecks.CancelledUploads),
     ("Refresh token configuration generates random tokens with a future expiry", () =>
     {
         using var services = CreateTokenServices("32", "7");
