@@ -17,8 +17,8 @@ namespace Adopetz.Api.Application.Features.Users.Auth.Commands
                 return;
             }
 
-            var user = await userRepository.GetByIdAsync(request.UserId, cancellationToken);
             var hashedToken = hasher.Hash(request.RefreshToken);
+            var user = await userRepository.GetByRefreshTokenAsync(hashedToken, cancellationToken);
 
             var tokenToRemove = user?.Tokens.FirstOrDefault(t => t.Token == hashedToken);
 

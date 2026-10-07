@@ -40,7 +40,8 @@ namespace Adopetz.Api.Web.Common.Extensions
                     {
                         policy.WithOrigins("http://localhost:4200")
                             .AllowAnyMethod()
-                            .AllowAnyHeader();
+                            .AllowAnyHeader()
+                            .AllowCredentials();
                     });
                 });
 
@@ -128,6 +129,14 @@ namespace Adopetz.Api.Web.Common.Extensions
                             QueueLimit = 0
                         });
                     });
+
+                    options.AddPolicy(RateLimitingPolicies.SessionRefresh, httpContext =>
+                        RateLimitPartition.GetFixedWindowLimiter(
+                            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                            _ => new FixedWindowRateLimiterOptions
+                            {
+                                PermitLimit = 60, Window = TimeSpan.FromMinutes(1), QueueLimit = 0
+                            }));
 
                     options.AddPolicy(RateLimitingPolicies.PublicQueryStrict, httpContext =>
                     {
@@ -219,8 +228,6 @@ namespace Adopetz.Api.Web.Common.Extensions
 
                 if (app.Environment.IsDevelopment())
                 {
-                    app.UseCors(AngularCorsPolicy);
-
                     app.MapOpenApi();
                     app.MapScalarApiReference(options =>
                     {
@@ -239,6 +246,9 @@ namespace Adopetz.Api.Web.Common.Extensions
                 app.UseExceptionHandler();
 
                 app.UseHttpsRedirection();
+
+                app.UseRouting();
+                app.UseCors(AngularCorsPolicy);
 
                 app.UseAuthentication();
                 app.UseAuthorization();

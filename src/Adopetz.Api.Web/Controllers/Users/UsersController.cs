@@ -56,7 +56,7 @@ namespace Adopetz.Api.Web.Controllers.Users
 
         [AllowAnonymous]
         [HttpPost("auth/refresh-token")]
-        [EnableRateLimiting(RateLimitingPolicies.LoginStrict)]
+        [EnableRateLimiting(RateLimitingPolicies.SessionRefresh)]
         public async Task<IActionResult> RefreshToken()
         {
             if (!Request.Cookies.TryGetValue(RefreshTokenCookieName, out var currentRefreshToken))
@@ -96,6 +96,7 @@ namespace Adopetz.Api.Web.Controllers.Users
             return NoContent();
         }
 
+        [AllowAnonymous]
         [HttpPost("auth/logout")]
         public async Task<IActionResult> Logout()
         {
@@ -104,14 +105,17 @@ namespace Adopetz.Api.Web.Controllers.Users
             if (!string.IsNullOrWhiteSpace(refreshToken))
             {
                 var command = new LogoutCommand(
-                    UserId: User.GetUserId(),
                     RefreshToken: refreshToken
                 );
 
                 await mediator.Send(command);
 
-                Response.Cookies.Delete(RefreshTokenCookieName);
             }
+
+            Response.Cookies.Delete(RefreshTokenCookieName, new CookieOptions
+            {
+                HttpOnly = true, Secure = true, SameSite = SameSiteMode.Strict, Path = "/"
+            });
 
             return NoContent();
         }

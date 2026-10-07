@@ -89,6 +89,8 @@ namespace Adopetz.Api.Web.Infrastructure.Middlewares
                 extensions.Add("validationErrors", validationErrors);
             }
 
+            httpContext.Response.StatusCode = statusCode;
+
             return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
             {
                 HttpContext = httpContext,

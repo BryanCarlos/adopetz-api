@@ -4,16 +4,15 @@ services:
     build:
       context: .
       dockerfile: src/Adopetz.Api.Web/Dockerfile
+    ports:
+      - "8080:80"
+      - "8081:443"
     depends_on:
       - db
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - DOTNET_USE_POLLING_FILE_WATCHER=1
-      - Database__Host=db
-      - Database__Port=5432
-      - Database__Name=${POSTGRES_DB}
-      - Database__User=${POSTGRES_USER}
-      - Database__Password=${POSTGRES_PASSWORD}
+    env_file:
+      - .env
+    volumes:
+      - ./certs:/app-certs:ro
 
   db:
     image: postgres:16-alpine

@@ -1,5 +1,6 @@
 ﻿using Adopetz.Api.Application.Common.Models;
 using Adopetz.Api.Application.Features.Pets.Commands;
+using Adopetz.Api.Application.Features.Pets.Commands.DTOs;
 using Adopetz.Api.Application.Features.Pets.Queries;
 using Adopetz.Api.Web.Common.Constants;
 using Adopetz.Api.Web.Common.Extensions;
@@ -41,7 +42,7 @@ namespace Adopetz.Api.Web.Controllers.Pets
         [EnableRateLimiting(RateLimitingPolicies.PetRegisterStrict)]
         public async Task<IActionResult> Register([FromForm] RegisterPetRequest request)
         {
-            var imageTasks = request.PetImages.Select(i => i.ToApplicationImageAsync());
+            var imageTasks = request.PetImages?.Select(imageReq => imageReq.ToApplicationImageAsync()) ?? Array.Empty<Task<CreatePetImageRequest>>();
 
             var petImages = await Task.WhenAll(imageTasks);
 
@@ -52,12 +53,32 @@ namespace Adopetz.Api.Web.Controllers.Pets
                 About:  request.About,
                 RescueDate: request.RescueDate,
                 AgeInYears: request.AgeInYears,
-                PetImages: petImages,
+                PetImages: petImages.Where(i => i != null).ToList(),
                 Vaccines: request.Vaccines
             );
             var petId = await mediator.Send(command);
 
-            return Created();
+            return Created($"/pets/me/{petId}", new { Id = petId });
+        }
+
+        [HttpGet("me/{petId:guid}")]
+        public async Task<IActionResult> GetManagedPet([FromRoute] Guid petId)
+        {
+            return Ok(await mediator.Send(new GetManagedPetQuery(petId, User.GetUserId())));
+        }
+
+        [HttpDelete("{petId:guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid petId)
+        {
+            await mediator.Send(new DeletePetCommand(petId, User.GetUserId()));
+            return NoContent();
+        }
+
+        [HttpPut("{petId:guid}/vaccines/{vaccineId:guid}")]
+        public async Task<IActionResult> UpdateVaccine([FromRoute] Guid petId, [FromRoute] Guid vaccineId, [FromBody] AddVaccineRequest request)
+        {
+            await mediator.Send(new UpdateVaccineCommand(petId, vaccineId, User.GetUserId(), request.Name, request.ApplicationDate));
+            return NoContent();
         }
 
         [HttpPut("{petId:guid}")]

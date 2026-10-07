@@ -28,6 +28,13 @@ namespace Adopetz.Api.Infrastructure
                 });
 
                 services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
+                services.AddOptions<RefreshTokenSettings>()
+                    .Bind(configuration.GetSection(RefreshTokenSettings.SectionName))
+                    .Validate(settings => settings.TokenBytes >= 32,
+                        "RefreshTokenSettings:TokenBytes must be at least 32.")
+                    .Validate(settings => settings.ExpiryDays > 0,
+                        "RefreshTokenSettings:ExpiryDays must be greater than zero.")
+                    .ValidateOnStart();
 
                 services.AddSingleton<IPasswordHasher, PasswordHasher>();
                 services.AddSingleton<ITokenGenerator, JwtTokenGenerator>();

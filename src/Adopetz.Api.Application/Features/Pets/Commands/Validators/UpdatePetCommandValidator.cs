@@ -54,7 +54,7 @@ namespace Adopetz.Api.Application.Features.Pets.Commands.Validators
                 .GreaterThanOrEqualTo(0)
                     .WithMessage("Age cannot be negative")
                     .WithErrorCode(ErrorCodes.Common.InvalidRange)
-                .GreaterThanOrEqualTo(100)
+                .LessThan(100)
                     .WithMessage("Age looks unreal for a pet")
                     .WithErrorCode(ErrorCodes.Common.InvalidRange);
         }

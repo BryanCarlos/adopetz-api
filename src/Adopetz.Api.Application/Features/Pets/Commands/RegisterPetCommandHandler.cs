@@ -34,9 +34,9 @@ namespace Adopetz.Api.Application.Features.Pets.Commands
                 }
             }
 
-            if (request.PetImages.Any())
+            if (request.PetImages != null && request.PetImages.Any())
             {
-                if (request.PetImages.Count >= 4)
+                if (request.PetImages.Count > 4)
                 {
                     throw new DomainException("The system allows uploading no more than 4 images per profile.", ErrorCodes.Pet.Image.MaxImagesLimit);
                 }

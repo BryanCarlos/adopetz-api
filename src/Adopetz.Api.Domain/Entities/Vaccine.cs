@@ -24,6 +24,10 @@
 
         public void Update(string name, DateTime? applicationDate)
         {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new Adopetz.Api.Domain.Common.Exceptions.DomainException("Vaccine name is required.", Adopetz.Api.Domain.Common.Constants.ErrorCodes.Common.Required);
+            if (applicationDate > DateTime.UtcNow)
+                throw new Adopetz.Api.Domain.Common.Exceptions.DomainException("Vaccine date cannot be in the future.", Adopetz.Api.Domain.Common.Constants.ErrorCodes.Pet.Vaccine.InvalidVaccineDate);
             this.Name = name;
             this.ApplicationDate = applicationDate;
         }

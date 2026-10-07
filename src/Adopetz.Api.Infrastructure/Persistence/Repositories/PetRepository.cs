@@ -31,6 +31,7 @@ namespace Adopetz.Api.Infrastructure.Persistence.Repositories
         public async Task<PaginatedList<Pet>> GetPetsByUserIdAsync(Guid userId, int pageNumber, int pageSize, CancellationToken cancellationToken)
         {
             return await context.Pets
+                .Where(p => p.UserId == userId)
                 .AsNoTracking()
                 .Include(p => p.User)
                 .Include(p => p.Vaccines)
