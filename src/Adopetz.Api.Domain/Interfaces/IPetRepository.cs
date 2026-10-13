@@ -1,0 +1,14 @@
+﻿using Adopetz.Api.Domain.Common.Models;
+using Adopetz.Api.Domain.Entities;
+
+namespace Adopetz.Api.Domain.Interfaces
+{
+    public interface IPetRepository
+    {
+        Task<Pet?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<PaginatedList<Pet>> SearchAsync(int pageNumber, int pageSize, PetFilter filter, CancellationToken cancellationToken = default);
+        void Add(Pet pet);
+        void Delete(Pet pet);
+        Task<PaginatedList<Pet>> GetPetsByUserIdAsync(Guid userId, int pageNumber, int pageSize, CancellationToken cancellationToken);
+    }
+}

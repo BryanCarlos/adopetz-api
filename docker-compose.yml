@@ -4,3 +4,25 @@ services:
     build:
       context: .
       dockerfile: src/Adopetz.Api.Web/Dockerfile
+    ports:
+      - "8080:80"
+      - "8081:443"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    volumes:
+      - ./certs:/app-certs:ro
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      -  "5432:5432"
+    volumes:
+      - "postgres_data:/var/lib/postgresql/data"
+volumes:
+  postgres_data:

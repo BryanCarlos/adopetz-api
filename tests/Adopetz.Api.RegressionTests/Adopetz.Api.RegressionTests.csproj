@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Adopetz.Api.Application/Adopetz.Api.Application.csproj" />
+    <ProjectReference Include="../../src/Adopetz.Api.Infrastructure/Adopetz.Api.Infrastructure.csproj" />
+    <ProjectReference Include="../../src/Adopetz.Api.Web/Adopetz.Api.Web.csproj" />
+  </ItemGroup>
+</Project>

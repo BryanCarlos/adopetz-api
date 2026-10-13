@@ -1,37 +1,30 @@
 
+using Adopetz.Api.Application;
+using Adopetz.Api.Infrastructure;
+using Adopetz.Api.Infrastructure.Persistence.Initializers;
+using Adopetz.Api.Web.Common.Extensions;
 using Scalar.AspNetCore;
 
 namespace Adopetz.Api.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            var configuration = builder.Configuration;
+            var services = builder.Services;
 
-            builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+            services.AddInfrastructure(configuration);
+            services.AddApplication();
+            services.AddWebServices(configuration);
+            services.AddWebRateLimiting();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-                app.MapScalarApiReference();
-
-                app.MapGet("", () => Results.Redirect("/scalar"));
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
+            await app.UseWebPipeline();
 
             app.Run();
         }
