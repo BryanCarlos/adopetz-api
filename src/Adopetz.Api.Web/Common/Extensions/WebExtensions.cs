@@ -21,6 +21,7 @@ namespace Adopetz.Api.Web.Common.Extensions
     public static class WebExtensions
     {
         private const string AngularCorsPolicy = "AngularClientPolicy";
+        private const string ProductionCorsPolicy = "ProductionCorsPolicy";
 
         extension (IServiceCollection services)
         {
@@ -39,6 +40,14 @@ namespace Adopetz.Api.Web.Common.Extensions
                     options.AddPolicy(AngularCorsPolicy, policy =>
                     {
                         policy.WithOrigins("http://localhost:4200")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+                    });
+
+                    options.AddPolicy(ProductionCorsPolicy, policy =>
+                    {
+                        policy.WithOrigins("https://adopetz-web.vercel.app")
                             .AllowAnyMethod()
                             .AllowAnyHeader()
                             .AllowCredentials();
@@ -245,10 +254,20 @@ namespace Adopetz.Api.Web.Common.Extensions
 
                 app.UseExceptionHandler();
 
-                app.UseHttpsRedirection();
+                if (app.Environment.IsDevelopment())
+                {
+                    app.UseHttpsRedirection();
+                }
 
                 app.UseRouting();
-                app.UseCors(AngularCorsPolicy);
+                if (app.Environment.IsDevelopment())
+                {
+                    app.UseCors(AngularCorsPolicy);
+                }
+                else
+                {
+                    app.UseCors(ProductionCorsPolicy);
+                }
 
                 app.UseAuthentication();
                 app.UseAuthorization();
